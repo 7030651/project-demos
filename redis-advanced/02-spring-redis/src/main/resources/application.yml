@@ -1,0 +1,11 @@
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 5
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: 1000
+  main:
+    allow-circular-references: true
