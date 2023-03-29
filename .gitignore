@@ -14,6 +14,7 @@ local.properties
 target/
 *.iml
 .DS_Store
+tokens.txt
 
 # External tool builders
 .externalToolBuilders/
