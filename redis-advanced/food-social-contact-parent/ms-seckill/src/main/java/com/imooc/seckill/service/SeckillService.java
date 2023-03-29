@@ -2,7 +2,7 @@ package com.imooc.seckill.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.imooc.commons.constant.ApiConstant;
-import com.imooc.commons.exception.ParameterException;
+import com.imooc.commons.constant.RedisConstant;
 import com.imooc.commons.model.domain.ResultInfo;
 import com.imooc.commons.model.pojo.SeckillVouchers;
 import com.imooc.commons.model.pojo.VoucherOrders;
@@ -11,13 +11,19 @@ import com.imooc.commons.utils.AssertUtil;
 import com.imooc.commons.utils.ResultInfoUtil;
 import com.imooc.seckill.mapper.SeckillVouchersMapper;
 import com.imooc.seckill.mapper.VoucherOrdersMapper;
+import com.imooc.seckill.tools.RedisLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 秒杀业务逻辑层
@@ -33,12 +39,14 @@ public class SeckillService {
     private String oauthServerName;
     @Resource
     private RestTemplate restTemplate;
-//    @Resource
-//    private DefaultRedisScript defaultRedisScript;
-//    @Resource
-//    private RedisLock redisLock;
-//    @Resource
-//    private RedissonClient redissonClient;
+    @Resource
+    private RedisTemplate redisTemplate;
+    @Resource
+    private DefaultRedisScript defaultRedisScript;
+    @Resource
+    private RedisLock redisLock;
+    @Resource
+    private RedissonClient redissonClient;
 
     /**
      * 抢购代金券
@@ -49,19 +57,15 @@ public class SeckillService {
      */
     public ResultInfo doSeckillWithMysql(Integer voucherId, String accessToken) {
 
-        // 注释原始的 关系型数据库 的流程
         SeckillVouchers seckillVouchers = seckillVouchersMapper.selectVoucher(voucherId);
         checkVoucherValid(seckillVouchers);
 
-        // 获取登录用户信息
-        String url = oauthServerName + "user/me?access_token={accessToken}";
-        ResultInfo resultInfo = restTemplate.getForObject(url, ResultInfo.class, accessToken);
+        ResultInfo resultInfo = getLoginUserInfo(accessToken);
         if (resultInfo.getCode() != ApiConstant.SUCCESS_CODE) {
             return resultInfo;
         }
         // 这里的data是一个LinkedHashMap，SignInDinerInfo
-        SignInDinerInfo dinerInfo = BeanUtil.fillBeanWithMap((LinkedHashMap) resultInfo.getData(),
-                new SignInDinerInfo(), false);
+        SignInDinerInfo dinerInfo = transToSignInDinerInfo(((LinkedHashMap) resultInfo.getData()));
         // 判断登录用户是否已抢到(一个用户针对这次活动只能买一次)
         VoucherOrders order = voucherOrdersMapper.findDinerOrder(dinerInfo.getId(),
                 seckillVouchers.getFkVoucherId());
@@ -73,63 +77,28 @@ public class SeckillService {
         return ResultInfoUtil.buildSuccess("抢购成功");
     }
 
-    private void checkVoucherValid(SeckillVouchers seckillVouchers) {
-        // 1. 判断此代金券是否加入抢购
-        AssertUtil.isTrue(seckillVouchers == null, "该代金券并未有抢购活动");
-        // 判断是否有效
-        AssertUtil.isTrue(seckillVouchers.getIsValid() == 0, "该活动已结束");
-
-        // 2. 判断抢购是否开始、结束
-        Date now = new Date();
-        AssertUtil.isTrue(now.before(seckillVouchers.getStartTime()), "该抢购还未开始");
-        AssertUtil.isTrue(now.after(seckillVouchers.getEndTime()), "该抢购已结束");
-        // 3. 判断是否卖完
-        AssertUtil.isTrue(seckillVouchers.getAmount() < 1, "该券已经卖完了");
-    }
-
     @Transactional(rollbackFor = Exception.class)
     public ResultInfo doSeckill(Integer voucherId, String accessToken) {
 
-        // 注释原始的 关系型数据库 的流程
         // 1. 判断此代金券是否加入抢购
-         SeckillVouchers seckillVouchers = seckillVouchersMapper.selectVoucher(voucherId);
-         AssertUtil.isTrue(seckillVouchers == null, "该代金券并未有抢购活动");
-        // 判断是否有效
-         AssertUtil.isTrue(seckillVouchers.getIsValid() == 0, "该活动已结束");
-
-        // 采用 Redis
-//        String key = RedisKeyConstant.seckill_vouchers.getKey() + voucherId;
-//        Map<String, Object> map = redisTemplate.opsForHash().entries(key);
-//        SeckillVouchers seckillVouchers = BeanUtil.mapToBean(map, SeckillVouchers.class, true, null);
+        String key = RedisConstant.SECKILL_VOUCHERS + voucherId;
+        Map<String, Object> map = redisTemplate.opsForHash().entries(key);
+        SeckillVouchers seckillVouchers = BeanUtil.mapToBean(map, SeckillVouchers.class, true, null);
 
         // 2. 判断抢购是否开始、结束
-        Date now = new Date();
-        AssertUtil.isTrue(now.before(seckillVouchers.getStartTime()), "该抢购还未开始");
-        AssertUtil.isTrue(now.after(seckillVouchers.getEndTime()), "该抢购已结束");
-        // 3. 判断是否卖完
-        AssertUtil.isTrue(seckillVouchers.getAmount() < 1, "该券已经卖完了");
+        checkVoucherValid(seckillVouchers);
         // 获取登录用户信息
-        String url = oauthServerName + "user/me?access_token={accessToken}";
-        ResultInfo resultInfo = restTemplate.getForObject(url, ResultInfo.class, accessToken);
+        ResultInfo resultInfo = getLoginUserInfo(accessToken);
         if (resultInfo.getCode() != ApiConstant.SUCCESS_CODE) {
             return resultInfo;
         }
         // 这里的data是一个LinkedHashMap，SignInDinerInfo
-        SignInDinerInfo dinerInfo = BeanUtil.fillBeanWithMap((LinkedHashMap) resultInfo.getData(),
-                new SignInDinerInfo(), false);
+        SignInDinerInfo dinerInfo = transToSignInDinerInfo((LinkedHashMap) resultInfo.getData());
         // 判断登录用户是否已抢到(一个用户针对这次活动只能买一次)
-        VoucherOrders order = voucherOrdersMapper.findDinerOrder(dinerInfo.getId(),
-                seckillVouchers.getFkVoucherId());
-        AssertUtil.isTrue(order != null, "该用户已抢到该代金券，无需再抢");
-
-        // 注释原始的 关系型数据库 的流程
-        // 扣库存
-         int count = seckillVouchersMapper.stockDecrease(seckillVouchers.getId());
-         AssertUtil.isTrue(count == 0, "该券已经卖完了");
 
         // 使用 Redis 锁一个账号只能购买一次
-//        String lockName = RedisKeyConstant.lock_key.getKey() + dinerInfo.getId() + ":" + voucherId;
-        long expireTime = seckillVouchers.getEndTime().getTime() - now.getTime();
+        String lockName = RedisConstant.LOCK_KEY + dinerInfo.getId() + ":" + voucherId;
+//        long expireTime = seckillVouchers.getEndTime().getTime() - now.getTime();
 
         // 自定义 Redis 分布式锁
         //String lockKey = redisLock.tryLock(lockName, expireTime);
@@ -185,6 +154,35 @@ public class SeckillService {
         }*/
 
         return ResultInfoUtil.buildSuccess("抢购成功");
+    }
+
+    private SignInDinerInfo transToSignInDinerInfo(LinkedHashMap data) {
+        SignInDinerInfo dinerInfo = BeanUtil.fillBeanWithMap((LinkedHashMap) data,
+                new SignInDinerInfo(), false);
+
+        return dinerInfo;
+    }
+
+    private ResultInfo getLoginUserInfo(String accessToken) {
+        // 获取登录用户信息
+        String url = oauthServerName + "user/me?access_token={accessToken}";
+        ResultInfo resultInfo = restTemplate.getForObject(url, ResultInfo.class, accessToken);
+        return resultInfo;
+    }
+
+
+    private void checkVoucherValid(SeckillVouchers seckillVouchers) {
+        // 1. 判断此代金券是否加入抢购
+        AssertUtil.isTrue(seckillVouchers == null, "该代金券并未有抢购活动");
+        // 判断是否有效
+        AssertUtil.isTrue(seckillVouchers.getIsValid() == 0, "该活动已结束");
+
+        // 2. 判断抢购是否开始、结束
+        Date now = new Date();
+        AssertUtil.isTrue(now.before(seckillVouchers.getStartTime()), "该抢购还未开始");
+        AssertUtil.isTrue(now.after(seckillVouchers.getEndTime()), "该抢购已结束");
+        // 3. 判断是否卖完
+        AssertUtil.isTrue(seckillVouchers.getAmount() < 1, "该券已经卖完了");
     }
 
     /**
