@@ -3,6 +3,7 @@ package com.imooc.seckill.controller;
 import com.imooc.commons.model.domain.ResultInfo;
 import com.imooc.commons.model.pojo.SeckillVouchers;
 import com.imooc.commons.utils.ResultInfoUtil;
+import com.imooc.commons.utils.TokenUtils;
 import com.imooc.seckill.service.SeckillService;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,14 +24,14 @@ public class SeckillController {
 
     /**
      * 秒杀下单
-     *
+     *3
      * @param voucherId
-     * @param accessToken
      * @return
      */
     @GetMapping(value = "/{voucherId}")
-    public ResultInfo doSeckill(@PathVariable Integer voucherId, @RequestParam(value = "access_token") String accessToken) {
-        ResultInfo resultInfo = seckillService.doSeckill(voucherId, accessToken);
+    public ResultInfo doSeckill(@PathVariable Integer voucherId) {
+        String accessToken = TokenUtils.parseToken(request);
+        ResultInfo resultInfo = seckillService.doSeckillWithMysql(voucherId, accessToken);
         if (resultInfo != null) {
             resultInfo.setPath(request.getServletPath());
         }

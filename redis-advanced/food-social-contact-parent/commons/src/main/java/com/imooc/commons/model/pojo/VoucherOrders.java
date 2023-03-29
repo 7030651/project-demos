@@ -5,10 +5,12 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 @ApiModel(description = "代金券订单信息")
 @Getter
 @Setter
+@Accessors(chain = true)
 public class VoucherOrders extends BaseModel {
 
     @ApiModelProperty("订单编号")

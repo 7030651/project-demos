@@ -1,13 +1,11 @@
 package com.imooc.diners.controller;
 
-import com.imooc.commons.exception.ParameterException;
 import com.imooc.commons.model.domain.ResultInfo;
 import com.imooc.commons.utils.AssertUtil;
 import com.imooc.commons.utils.ResultInfoUtil;
 import com.imooc.diners.domain.Diners;
 import com.imooc.diners.dto.DinerRegisterRequests;
 import com.imooc.diners.service.DinersService;
-import org.springframework.util.DigestUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 

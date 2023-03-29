@@ -4,7 +4,6 @@ import com.imooc.commons.model.base.BaseModel;
 import lombok.*;
 
 import javax.persistence.Column;
-import javax.persistence.JoinColumn;
 
 /**
  * @author E.T

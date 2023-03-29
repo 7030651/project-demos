@@ -5,8 +5,6 @@ import com.imooc.commons.constant.ApiConstant;
 import com.imooc.commons.model.domain.ResultInfo;
 import org.springframework.validation.BindingResult;
 
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.TreeMap;
 
 /**

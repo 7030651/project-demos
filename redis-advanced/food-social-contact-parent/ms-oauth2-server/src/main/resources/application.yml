@@ -32,8 +32,8 @@ client:
       - password
       - refresh_token
     # token 有效时间，单位秒
-    token-validity-time: 3600
-    refresh-token-validity-time: 3600
+    token-validity-time: 360000
+    refresh-token-validity-time: 360000
     # 客户端访问范围
     scopes:
       - api
@@ -46,7 +46,7 @@ eureka:
     instance-id: ${spring.cloud.client.ip-address}:${server.port}
   client:
     service-url:
-      defaultZone: http://localhost:8080/eureka/
+      defaultZone: http://pc-sony:8080/eureka/
 
 # Mybatis
 mybatis:

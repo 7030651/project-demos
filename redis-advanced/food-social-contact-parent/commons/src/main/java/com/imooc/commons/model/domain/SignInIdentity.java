@@ -1,7 +1,6 @@
 package com.imooc.commons.model.domain;
 
 import cn.hutool.core.util.StrUtil;
-import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;

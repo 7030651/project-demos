@@ -7,6 +7,8 @@ public interface RedisConstant {
 
     /** 短信验证码 */
     String VERIFY_CODE = "verify_code:";
-    /** 秒杀券的key */
+    /** 秒杀券的 key */
     String SECKILL_VOUCHERS = "seckill_vouchers:";
+    /** 分布式锁的 Key */
+    String LOCK_KEY = "lockby:";
 }

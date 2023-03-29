@@ -1,6 +1,7 @@
 package com.imooc.seckill.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.IdUtil;
 import com.imooc.commons.constant.ApiConstant;
 import com.imooc.commons.constant.RedisConstant;
 import com.imooc.commons.model.domain.ResultInfo;
@@ -74,6 +75,14 @@ public class SeckillService {
         // 扣库存
         int count = seckillVouchersMapper.stockDecrease(seckillVouchers.getId());
         AssertUtil.isTrue(count == 0, "该券已经卖完了");
+        VoucherOrders voucherOrders = new VoucherOrders()
+                .setFkDinerId(dinerInfo.getId())
+                .setFkVoucherId(seckillVouchers.getFkVoucherId())
+                .setOrderNo(IdUtil.getSnowflake(1, 1).nextIdStr())
+                .setOrderType(1)
+                .setStatus(0);
+        count = voucherOrdersMapper.save(voucherOrders);
+        AssertUtil.isTrue(count == 0, "用户抢购失败");
         return ResultInfoUtil.buildSuccess("抢购成功");
     }
 
