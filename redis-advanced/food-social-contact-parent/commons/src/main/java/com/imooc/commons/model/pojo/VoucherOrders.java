@@ -1,15 +1,20 @@
 package com.imooc.commons.model.pojo;
 
+import cn.hutool.core.util.IdUtil;
 import com.imooc.commons.model.base.BaseModel;
+import com.imooc.commons.model.vo.SignInDinerInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @ApiModel(description = "代金券订单信息")
 @Getter
 @Setter
+@NoArgsConstructor
 @Accessors(chain = true)
 public class VoucherOrders extends BaseModel {
 
@@ -29,5 +34,17 @@ public class VoucherOrders extends BaseModel {
     private int orderType;
     @ApiModelProperty("抢购订单的外键")
     private int fkSeckillId;
+
+    public VoucherOrders(SeckillVouchers seckillVouchers, SignInDinerInfo dinerInfo) {
+        this.fkDinerId = dinerInfo.getId();
+        this.fkVoucherId = seckillVouchers.getFkVoucherId();
+        // 使用 redis 时不需要维护该外键。
+        if (seckillVouchers.getId() != null) {
+            this.fkSeckillId = seckillVouchers.getId();
+        }
+        this.orderNo = IdUtil.getSnowflake(1, 1).nextIdStr();
+        this.orderType = 1;
+        this.status = 0;
+    }
 
 }

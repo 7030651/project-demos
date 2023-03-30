@@ -31,7 +31,8 @@ public class SeckillController {
     @GetMapping(value = "/{voucherId}")
     public ResultInfo doSeckill(@PathVariable Integer voucherId) {
         String accessToken = TokenUtils.parseToken(request);
-        ResultInfo resultInfo = seckillService.doSeckillWithMysql(voucherId, accessToken);
+//        ResultInfo resultInfo = seckillService.doSeckillWithMysql(voucherId, accessToken);
+        ResultInfo resultInfo = seckillService.doSeckill(voucherId, accessToken);
         if (resultInfo != null) {
             resultInfo.setPath(request.getServletPath());
         }

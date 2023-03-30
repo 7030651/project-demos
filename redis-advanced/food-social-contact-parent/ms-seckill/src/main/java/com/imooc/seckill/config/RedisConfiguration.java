@@ -58,4 +58,21 @@ public class RedisConfiguration {
         return redisScript;
     }
 
+    @Bean
+    public DefaultRedisScript<Long> lockScript() {
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+        //放在和application.yml 同层目录下
+        redisScript.setLocation(new ClassPathResource("lock.lua"));
+        redisScript.setResultType(Long.class);
+        return redisScript;
+    }
+    @Bean
+    public DefaultRedisScript<Long> unlockScript() {
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+        //放在和application.yml 同层目录下
+        redisScript.setLocation(new ClassPathResource("unlock.lua"));
+        redisScript.setResultType(Long.class);
+        return redisScript;
+    }
+
 }

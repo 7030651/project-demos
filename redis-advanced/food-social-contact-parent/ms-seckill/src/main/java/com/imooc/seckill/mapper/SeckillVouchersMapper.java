@@ -21,7 +21,7 @@ public interface SeckillVouchersMapper {
 
     // 减库存
     @Update("update t_seckill_vouchers set amount = amount - 1 " +
-            " where id = #{seckillId}")
+            " where id = #{seckillId} and amount > 0")
     int stockDecrease(@Param("seckillId") int seckillId);
 
 }

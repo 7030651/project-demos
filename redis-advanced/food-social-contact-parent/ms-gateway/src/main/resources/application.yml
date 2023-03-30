@@ -52,6 +52,6 @@ eureka:
 
 logging:
   level:
-    root: info
+    root: error
   pattern:
     console: '%d{HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n'
