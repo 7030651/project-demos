@@ -37,6 +37,7 @@ service:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true # 开启驼峰映射
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 # 配置 Eureka Server 注册中心
 eureka:
@@ -50,3 +51,5 @@ eureka:
 logging:
   pattern:
     console: '%d{HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n'
+  level:
+    com.imooc.diners.mapper.DinersMapper: debug

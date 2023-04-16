@@ -31,6 +31,13 @@ spring:
             - Path=/auth/**
           filters:
             - StripPrefix=1
+            -
+        - id: ms-follow
+          uri: lb://ms-follow
+          predicates:
+            - Path=/follow/**
+          filters:
+            - StripPrefix=1
 
 secure:
   ignore:

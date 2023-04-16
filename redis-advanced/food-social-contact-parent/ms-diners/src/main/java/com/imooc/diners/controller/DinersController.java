@@ -5,6 +5,7 @@ import com.imooc.commons.utils.AssertUtil;
 import com.imooc.commons.utils.ResultInfoUtil;
 import com.imooc.diners.domain.Diners;
 import com.imooc.diners.dto.DinerRegisterRequests;
+import com.imooc.diners.dto.LoginDinerInfo;
 import com.imooc.diners.service.DinersService;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/diners")
@@ -21,6 +23,17 @@ public class DinersController {
     private DinersService dinersService;
     @Resource
     private HttpServletRequest request;
+
+    @GetMapping(value = "/list")
+    public ResultInfo list(@RequestParam String ids) {
+        String[] split = ids.split(",");
+        Integer[] idArray = new Integer[split.length];
+        for (int i = 0; i < idArray.length; i ++) {
+            idArray[i] = Integer.parseInt(split[i]);
+        }
+        List<LoginDinerInfo> diners = dinersService.list(idArray);
+        return ResultInfoUtil.buildSuccess(request.getServletPath(), diners);
+    }
 
     @GetMapping("/signin")
     public ResultInfo signIn(String account, String password) {

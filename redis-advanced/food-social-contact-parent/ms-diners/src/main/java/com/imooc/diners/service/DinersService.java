@@ -9,8 +9,8 @@ import com.imooc.diners.config.OAuth2ClientConfigProperties;
 import com.imooc.diners.domain.Diners;
 import com.imooc.diners.domain.OAuthDinerInfo;
 import com.imooc.diners.dto.DinerRegisterRequests;
+import com.imooc.diners.dto.LoginDinerInfo;
 import com.imooc.diners.mapper.DinersMapper;
-import com.imooc.diners.vo.LoginDinerInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -40,6 +41,9 @@ public class DinersService {
     @Resource
     private OAuth2ClientConfigProperties oAuth2ClientConfigProperties;
 
+    public List<LoginDinerInfo> list(Integer[] ids) {
+        return dinersMapper.findByIds(ids);
+    }
     public ResultInfo signIn(String account, String password) {
         // 构造 rest 请求。
         HttpHeaders headers = new HttpHeaders();

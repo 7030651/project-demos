@@ -1,9 +1,9 @@
 server:
-  port: 8083 # 端口
+  port: 8084 # 端口
 
 spring:
   application:
-    name: ms-seckill # 应用名
+    name: ms-follow # 应用名
   # 数据库
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -16,28 +16,10 @@ spring:
     host: localhost
     timeout: 3000
     database: 0
-  # swagger
+  # Swagger
   swagger:
-    base-package: com.imooc.seckill
+    base-package: com.imooc.follow
     title: 慕课美食社交食客API接口文档
-
-# Oauth2 客户端信息
-oauth2:
-  client:
-    client-id: appId
-    secret: 123456
-    grant-type: password
-    scope: api
-
-# oauth2 服务地址
-service:
-  name:
-    ms-oauth-server: http://ms-oauth2-server/
-
-# Mybatis
-mybatis:
-  configuration:
-    map-underscore-to-camel-case: true # 开启驼峰映射
 
 # 配置 Eureka Server 注册中心
 eureka:
@@ -48,6 +30,24 @@ eureka:
     service-url:
       defaultZone: http://pc-sony:8080/eureka/
 
+service:
+  name:
+    ms-oauth-server: http://ms-oauth2-server/
+    ms-diners-server: http://ms-diners/
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true # 开启驼峰映射
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 logging:
   pattern:
     console: '%d{HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n'
+  level:
+    #com.imooc.oauth2.client.Oauth2ServerClient: debug
+    com.imooc.diners.client.DinersClient: debug
+
+feign:
+  client:
+    config:
+      default:
+        logger-level: full

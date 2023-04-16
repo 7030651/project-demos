@@ -1,9 +1,8 @@
-package com.imooc.seckill.config;
+package com.imooc.follow.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.imooc.seckill.tools.RedisLock;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -48,31 +47,4 @@ public class RedisConfiguration {
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
-
-    @Bean
-    public DefaultRedisScript<Long> stockScript() {
-        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
-        //放在和application.yml 同层目录下
-        redisScript.setLocation(new ClassPathResource("stock.lua"));
-        redisScript.setResultType(Long.class);
-        return redisScript;
-    }
-
-    @Bean
-    public DefaultRedisScript<Long> lockScript() {
-        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
-        //放在和application.yml 同层目录下
-        redisScript.setLocation(new ClassPathResource("lock.lua"));
-        redisScript.setResultType(Long.class);
-        return redisScript;
-    }
-    @Bean
-    public DefaultRedisScript<Long> unlockScript() {
-        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
-        //放在和application.yml 同层目录下
-        redisScript.setLocation(new ClassPathResource("unlock.lua"));
-        redisScript.setResultType(Long.class);
-        return redisScript;
-    }
-
 }

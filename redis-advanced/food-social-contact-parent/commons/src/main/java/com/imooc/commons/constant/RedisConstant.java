@@ -13,4 +13,8 @@ public interface RedisConstant {
     String SECKILL_VOUCHERS = "seckill_vouchers:";
     /** 分布式锁的 Key */
     String LOCK_KEY = "lock_by";
+    /** 关注集合的 KEY */
+    String FOLLOWING = "following:";
+    /** 粉丝集合的 KEY */
+    String FOLLOWERS = "followers:";
 }

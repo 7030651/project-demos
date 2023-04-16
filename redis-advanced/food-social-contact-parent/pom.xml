@@ -16,6 +16,9 @@
         <module>ms-oauth2-server</module>
         <module>common-web</module>
         <module>ms-seckill</module>
+        <module>ms-follow</module>
+        <module>api/oauth2-server-api</module>
+        <module>api/diners-api</module>
     </modules>
 
     <properties>

@@ -1,9 +1,12 @@
 package com.imooc.diners.mapper;
 
 import com.imooc.diners.domain.Diners;
+import com.imooc.diners.dto.LoginDinerInfo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * 食客 Mapper
@@ -27,13 +30,13 @@ public interface DinersMapper {
     int save(Diners entity);
 
     // 根据 ID 集合查询多个食客信息
-//    @Select("<script> " +
-//            " select id, nickname, avatar_url from t_diners " +
-//            " where is_valid = 1 and id in " +
-//            " <foreach item=\"id\" collection=\"ids\" open=\"(\" separator=\",\" close=\")\"> " +
-//            "   #{id} " +
-//            " </foreach> " +
-//            " </script>")
-//    List<ShortDinerInfo> findByIds(@Param("ids") String[] ids);
+    @Select("<script> " +
+            " select id, nickname, avatar_url from t_diners " +
+            " where is_valid = 1 and id in " +
+            " <foreach item=\"id\" collection=\"ids\" open=\"(\" separator=\",\" close=\")\"> " +
+            "   #{id} " +
+            " </foreach> " +
+            " </script>")
+    List<LoginDinerInfo> findByIds(@Param("ids") Integer[] ids);
 
 }
