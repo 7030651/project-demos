@@ -19,6 +19,8 @@
         <module>ms-follow</module>
         <module>api/oauth2-server-api</module>
         <module>api/diners-api</module>
+        <module>api/follow-api</module>
+        <module>ms-feeds</module>
     </modules>
 
     <properties>
@@ -41,6 +43,28 @@
     <!-- 集中定义依赖，不引入 -->
     <dependencyManagement>
         <dependencies>
+            <!-- sub modules-->
+            <dependency>
+                <groupId>com.imooc</groupId>
+                <artifactId>common-web</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.imooc</groupId>
+                <artifactId>oauth2-server-api</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.imooc</groupId>
+                <artifactId>follow-api</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.imooc</groupId>
+                <artifactId>diners-api</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
             <!-- spring boot 依赖 -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
