@@ -30,10 +30,18 @@ public class GlobalExceptionTranslator {
     @ExceptionHandler(ParameterException.class)
     public ResultInfo handlerParameterException(ParameterException ex) {
         String path = request.getRequestURI();
-
         ResultInfo resultInfo =
                 ResultInfoUtil.buildError(ex.getErrorCode(), ex.getMessage(), path);
         return resultInfo;
+    }
+
+    public BaseResponse handlerError(IllegalArgumentException e) {
+        log.warn("Illegal Argument", e);
+        return BaseResponse
+                .builder()
+                .code(ApiConstant.ERROR_CODE)
+                .message(e.getMessage())
+                .build();
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public BaseResponse handleError(MethodArgumentNotValidException e) {

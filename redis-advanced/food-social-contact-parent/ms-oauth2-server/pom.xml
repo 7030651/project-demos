@@ -22,6 +22,10 @@
             <artifactId>common-web</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.imooc</groupId>
+            <artifactId>oauth2-server-api</artifactId>
+        </dependency>
         <!-- spring data redis -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

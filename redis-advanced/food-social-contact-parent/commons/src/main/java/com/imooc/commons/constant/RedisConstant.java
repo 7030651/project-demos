@@ -17,4 +17,6 @@ public interface RedisConstant {
     String FOLLOWING = "following:";
     /** 粉丝集合的 KEY */
     String FOLLOWERS = "followers:";
+    /** 关注的信息流的 KEY */
+    String FOLLOWING_FEEDS = "following_feeds:";
 }

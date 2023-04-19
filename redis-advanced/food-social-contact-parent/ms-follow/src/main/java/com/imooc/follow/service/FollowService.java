@@ -134,4 +134,9 @@ public class FollowService {
                 .collect(Collectors.toList());
         return diners;
     }
+
+    public Set<Integer> followers(Integer dinerId) {
+        String key = RedisConstant.FOLLOWERS + dinerId;
+        return redisTemplate.opsForSet().members(key);
+    }
 }

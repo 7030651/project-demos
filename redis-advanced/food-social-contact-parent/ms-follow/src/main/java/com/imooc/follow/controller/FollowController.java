@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author E.T
@@ -28,6 +29,19 @@ public class FollowController {
         List<LoginDinerInfo> friends = followService.friends(dinerId);
         return ResultInfoUtil.buildSuccess(request.getRequestURI(), friends);
     }
+
+    /**
+     * 获取用户的粉丝列表。
+     * @param dinerId
+     * @return
+     */
+    @GetMapping(value = "/{dinerId}/followers")
+    public ResultInfo followers(@PathVariable Integer dinerId) {
+        Set<Integer> followerIds = followService.followers(dinerId);
+        return ResultInfoUtil.buildSuccess("", followerIds);
+    }
+
+
     @PostMapping(value = "/{followDinerId}")
     public ResultInfo follow(@PathVariable Integer followDinerId, int isFollowed) {
         return followService.follow(followDinerId, isFollowed);

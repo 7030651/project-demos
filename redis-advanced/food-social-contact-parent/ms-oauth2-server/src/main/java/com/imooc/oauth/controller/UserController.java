@@ -4,6 +4,7 @@ import com.imooc.commons.model.domain.ResultInfo;
 import com.imooc.commons.model.domain.SignInIdentity;
 import com.imooc.commons.model.vo.SignInDinerInfo;
 import com.imooc.commons.utils.ResultInfoUtil;
+import com.imooc.oauth2.dto.SignInDinerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -31,6 +32,14 @@ public class UserController {
         SignInDinerInfo userVO = new SignInDinerInfo();
         BeanUtils.copyProperties(user, userVO);
         return ResultInfoUtil.buildDataSuccess(userVO);
+    }
+
+    @GetMapping(value = "/current")
+    public SignInDinerResponse current(Authentication authentication) {
+        SignInIdentity user = (SignInIdentity) authentication.getPrincipal();
+        SignInDinerInfo userVO = new SignInDinerInfo();
+        BeanUtils.copyProperties(user, userVO);
+        return new SignInDinerResponse(userVO);
     }
 
     @GetMapping(value = "/logout")
