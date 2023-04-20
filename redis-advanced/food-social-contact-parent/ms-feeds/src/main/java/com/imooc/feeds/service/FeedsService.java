@@ -9,6 +9,7 @@ import com.imooc.feeds.mapper.FeedsMapper;
 import com.imooc.follow.client.FollowClient;
 import com.imooc.oauth2.client.Oauth2ServerClient;
 import com.imooc.oauth2.dto.SignInDinerResponse;
+import org.apache.http.util.Asserts;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

@@ -1,9 +1,7 @@
 package com.imooc.commons.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.imooc.commons.constant.ApiConstant;
+import lombok.*;
 
 /**
  * @author E.T
@@ -15,5 +13,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BaseResponse {
     private String message;
-    private int code = 200;
+    private int code = ApiConstant.SUCCESS_CODE;
+
+    public static BaseResponse success() {
+        return BaseResponse.builder().message("success").code(ApiConstant.SUCCESS_CODE)
+                .build();
+    }
 }

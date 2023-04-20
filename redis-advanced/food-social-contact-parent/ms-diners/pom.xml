@@ -34,6 +34,11 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>com.imooc</groupId>
+            <artifactId>oauth2-server-api</artifactId>
+        </dependency>
+
         <!-- spring data redis -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

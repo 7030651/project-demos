@@ -19,4 +19,22 @@ public interface RedisConstant {
     String FOLLOWERS = "followers:";
     /** 关注的信息流的 KEY */
     String FOLLOWING_FEEDS = "following_feeds:";
+
+    /**
+     * 用户签到的 KEY 的格式化字符串。
+     * %d: 用户 ID
+     * %s: 日期，格式为 yyyyMM
+     */
+    String FORMAT_DINER_SIGN = "user:sign:%d:%s";
+
+    /**
+     * 构建用户签到的 KEY。
+     * @see #FORMAT_DINER_SIGN
+     * @param dinerId
+     * @param date yyyyMM
+     * @return
+     */
+    static String buildDinerSignKey(Integer dinerId, String date) {
+        return String.format(FORMAT_DINER_SIGN, dinerId, date);
+    }
 }

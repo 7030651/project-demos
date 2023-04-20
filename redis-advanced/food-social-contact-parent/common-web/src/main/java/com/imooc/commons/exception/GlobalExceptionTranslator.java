@@ -35,6 +35,7 @@ public class GlobalExceptionTranslator {
         return resultInfo;
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
     public BaseResponse handlerError(IllegalArgumentException e) {
         log.warn("Illegal Argument", e);
         return BaseResponse
